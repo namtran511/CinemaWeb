@@ -1,0 +1,221 @@
+﻿/* --- 1. CẤU TRÌNH TỔNG QUAN (DARK MODE) --- */
+:root {
+    --primary-red: #e50914; /* Màu đỏ Netflix/CGV */
+    --sidebar-bg: #0b0b0b;
+    --body-bg: #141414;
+    --text-color: #ffffff;
+}
+
+body {
+    background-color: var(--body-bg);
+    color: var(--text-color);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+/* --- SIDEBAR BIẾN HÌNH (BẢN CŨ XỊN XÒ) --- */
+.sidebar {
+    width: 70px; /* Ban đầu chỉ rộng 70px */
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: #0b0b0b;
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+    z-index: 1000;
+    border-right: 1px solid #222;
+    display: flex;
+    flex-direction: column;
+}
+
+    /* Khi di chuột vào Sidebar thì bung rộng ra */
+    .sidebar:hover {
+        width: 240px;
+    }
+
+    /* Kiểu dáng cho các link menu */
+    .sidebar .nav-link {
+        color: #999;
+        display: flex;
+        align-items: center;
+        white-space: nowrap; /* Ngăn chữ bị nhảy dòng */
+        padding: 15px 22px;
+        transition: all 0.2s;
+        text-decoration: none;
+        height: 55px;
+    }
+
+        /* Khi di chuột vào từng mục hoặc mục đang active */
+        .sidebar .nav-link:hover, .sidebar .nav-link.active {
+            color: #fff !important;
+            background-color: #e50914; /* Màu đỏ thương hiệu */
+        }
+
+        /* Cố định icon ở giữa khi menu thu gọn */
+        .sidebar .nav-link i {
+            min-width: 30px;
+            font-size: 1.3rem;
+            text-align: center;
+            margin-right: 20px;
+        }
+
+    /* Giấu chữ khi thu gọn và hiện ra khi bung */
+    .sidebar .link-text, .sidebar .logo-text {
+        opacity: 0;
+        transition: opacity 0.2s;
+        font-weight: 500;
+        pointer-events: none; /* Tránh click nhầm khi đang ẩn */
+    }
+
+    .sidebar:hover .link-text, .sidebar:hover .logo-text {
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+/* Logo Details */
+.logo-details {
+    height: 70px;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    color: #fff;
+    font-weight: 800;
+    font-size: 1.2rem;
+}
+
+/* --- PHẦN NỘI DUNG CHÍNH --- */
+.main-content {
+    margin-left: 70px; /* Nội dung luôn cách lề 70px */
+    transition: margin-left 0.3s;
+}
+
+/* Tùy chọn: Đẩy nội dung khi menu bung ra (để không bị che phim) */
+/* .sidebar:hover ~ .main-content { margin-left: 240px; } */
+/* --- 3. PHẦN NỘI DUNG CHÍNH (MAIN CONTENT) --- */
+.main-content {
+    margin-left: 70px;
+    transition: margin-left 0.3s;
+}
+
+.content-wrapper {
+    padding: 2rem 4rem; /* Cân đối phim với tiêu đề */
+}
+
+/* --- 4. TOP HEADER (GLASSMORPHISM) --- */
+.top-header {
+    height: 70px;
+    background-color: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(10px); /* Hiệu ứng kính mờ */
+    position: sticky;
+    top: 0;
+    z-index: 999;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* --- 5. CARD PHIM CHUYÊN NGHIỆP --- */
+.movie-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border-radius: 8px;
+}
+
+    .movie-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 10px 25px rgba(229, 9, 20, 0.4) !important;
+    }
+
+    .movie-card img {
+        aspect-ratio: 2/3; /* Tỉ lệ poster chuẩn rạp */
+        object-fit: cover;
+        border-bottom: 3px solid var(--primary-red);
+    }
+
+.movie-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.movie-card:hover .movie-overlay {
+    opacity: 1;
+}
+
+/* Tiêu đề phim */
+.section-title span {
+    letter-spacing: 1px;
+    font-weight: 800;
+}
+/* Sơ đồ màn hình */
+.screen {
+    width: 80%;
+    height: 10px;
+    background: #555;
+    margin: 0 auto;
+    box-shadow: 0 10px 20px rgba(255, 255, 255, 0.2);
+    text-align: center;
+    color: #888;
+    font-size: 12px;
+    line-height: 40px;
+    text-transform: uppercase;
+}
+
+/* Lưới ghế ngồi */
+.seats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 60px); /* Chia rạp làm 4 cột */
+    gap: 15px;
+    justify-content: center;
+}
+
+.seat-item {
+    width: 60px;
+    height: 50px;
+    background-color: #333;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px 5px 15px 15px; /* Bo góc kiểu cái ghế */
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+    border: 1px solid #444;
+}
+
+    .seat-item:hover {
+        background-color: #555;
+        transform: scale(1.1);
+    }
+
+    /* Ghế đang chọn */
+    .seat-item.selected {
+        background-color: #e50914 !important;
+        border-color: #ffc107;
+        font-weight: bold;
+    }
+
+/* Demo chú thích */
+.seat-demo {
+    width: 20px;
+    height: 20px;
+    border-radius: 3px;
+}
+
+    .seat-demo.available {
+        background: #333;
+    }
+
+    .seat-demo.selected {
+        background: #e50914;
+    }
+
+    .seat-demo.occupied {
+        background: #111;
+        opacity: 0.5;
+    }

@@ -1,0 +1,38 @@
+﻿@model CinemaWeb.Models.Ve
+@{
+    ViewData["Title"] = "Thanh Toán Chuyển Khoản";
+    // Cấu hình MB Bank: Thay 'MB' bằng ngân hàng của Sơn, '123456789' bằng số tài khoản thật
+    string nganHang = "MB";
+    string stk = "0396233141"; // Nhập số tài khoản MB của Sơn vào đây
+    string chuTk = "TRAN NGOC SON"; // Tên của Sơn (viết không dấu)
+
+    string qrUrl = $"https://img.vietqr.io/image/{nganHang}-{stk}-compact.jpg?amount={Model.TongTien}&addInfo=Thanh toan ve {Model.TenPhim} ghe {Model.TenGhe}&accountName={chuTk}";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card bg-dark text-white border-danger shadow-lg p-4 text-center">
+                <h3 class="text-danger fw-bold mb-4">QUÉT MÃ ĐỂ THANH TOÁN</h3>
+
+                <div class="bg-white p-3 d-inline-block rounded-3 mb-4">
+                    <img src="@qrUrl" alt="QR Thanh Toan" class="img-fluid" style="max-width: 300px;">
+                </div>
+
+                <div class="text-start mb-4 p-3 rounded" style="background: rgba(255,255,255,0.05)">
+                    <p class="mb-1">🎬 Phim: <span class="text-warning fw-bold">@Model.TenPhim</span></p>
+                    <p class="mb-1">💺 Ghế: <span class="text-warning fw-bold">@Model.TenGhe</span></p>
+                    <p class="mb-1">💰 Tổng tiền: <span class="text-danger fw-bold">@Model.TongTien.ToString("N0") VNĐ</span></p>
+                    <p class="mb-0 small text-secondary italic text-center mt-2">* Nội dung chuyển khoản đã được tạo tự động</p>
+                </div>
+
+                <div class="d-grid gap-2">
+                    <a asp-action="LichSu" class="btn btn-danger btn-lg fw-bold rounded-pill">
+                        TÔI ĐÃ THANH TOÁN XONG
+                    </a>
+                    <p class="small text-secondary mt-2">Hệ thống sẽ xác nhận vé sau khi nhận được tiền.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

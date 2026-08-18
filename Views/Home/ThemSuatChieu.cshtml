@@ -1,0 +1,43 @@
+﻿@model CinemaWeb.Models.SuatChieu
+@{ ViewData["Title"] = "Thêm Suất Chiếu"; }
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card bg-dark text-light border-warning shadow-lg">
+                <div class="card-header bg-warning text-dark py-3">
+                    <h4 class="mb-0 text-center fw-bold"><i class="bi bi-clock-history me-2"></i>TẠO SUẤT CHIẾU MỚI</h4>
+                </div>
+                <div class="card-body p-4">
+                    <form asp-action="ThemSuatChieu" method="post">
+                        
+                        <div class="mb-4">
+                            <label class="form-label fw-bold text-warning">Chọn Phim:</label>
+                            <select name="PhimId" class="form-select bg-secondary text-white border-0" required>
+                                <option value="">-- Chọn bộ phim --</option>
+                                @foreach (var p in ViewBag.Phims)
+                                {
+                                    <option value="@p.MaPhim">@p.TenPhim</option>
+                                }
+                            </select>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-bold text-warning">Thời Gian Chiếu:</label>
+                            <input type="text" name="ThoiGian" class="form-control bg-secondary text-white border-0" 
+                                   placeholder="Ví dụ: 19:00 - Thứ 7" required>
+                            <div class="form-text text-light-50 small">Định dạng tự do: 20:00, Sáng mai, 15/04...</div>
+                        </div>
+
+                        <div class="d-grid gap-2 mt-5">
+                            <button type="submit" class="btn btn-warning btn-lg fw-bold">
+                                <i class="bi bi-check-lg me-2"></i>LƯU SUẤT CHIẾU
+                            </button>
+                            <a href="/Home/AdminPhim" class="btn btn-outline-secondary">Hủy bỏ</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

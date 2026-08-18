@@ -1,0 +1,111 @@
+﻿@{
+    ViewData["Title"] = "Chọn Bắp Nước";
+    var dsCombo = ViewBag.DsCombo as List<CinemaWeb.Models.ComboBapNuoc>;
+}
+
+<div class="container mt-5 text-white" style="margin-bottom: 150px;">
+    <h3 class="text-center border-bottom border-danger pb-3 text-uppercase fw-bold text-danger">BẮP NƯỚC & COMBO</h3>
+
+    <div class="row mt-5">
+        @if (dsCombo != null && dsCombo.Any())
+        {
+            foreach (var c in dsCombo)
+            {
+                <div class="col-md-6 mb-4">
+                    <div class="d-flex bg-dark p-3 rounded border border-secondary align-items-center shadow">
+                        <img src="~/images/@c.HinhAnh" style="width: 110px; object-fit: contain;" alt="@c.TenCombo" onerror="this.src='/images/no-image.jpg';">
+                        <div class="ms-3 flex-grow-1">
+                            <h5 class="text-warning fw-bold">@c.TenCombo</h5>
+                            <p class="small text-secondary mb-1">@c.MoTa</p>
+                            <p class="fw-bold text-white">Giá: @c.Gia.ToString("N0") đ</p>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <button class="btn btn-sm btn-outline-danger" onclick="updateQty(@c.MaCombo, -1, @c.Gia, '@c.TenCombo')">-</button>
+                            <span id="qty-@c.MaCombo" class="mx-3 fw-bold">0</span>
+                            <button class="btn btn-sm btn-outline-danger" onclick="updateQty(@c.MaCombo, 1, @c.Gia, '@c.TenCombo')">+</button>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="col-12 text-center text-secondary">
+                <p>Hiện chưa có combo bắp nước nào được mở bán.</p>
+            </div>
+        }
+    </div>
+</div>
+
+<div class="fixed-bottom bg-black border-top border-danger p-3 text-white shadow-lg" style="z-index: 1050; margin-left: 70px;">
+    <div class="container d-flex justify-content-between align-items-center">
+        <div>
+            <h6 class="text-danger fw-bold mb-0 text-uppercase">@ViewBag.TenPhim</h6>
+            <small class="text-secondary">Ghế đã chọn: <span class="text-white">@ViewBag.DanhSachGhe</span></small>
+        </div>
+        <div class="text-end">
+            <p class="mb-0 small text-secondary">Tiền vé: @((ViewBag.DanhSachGhe != null ? ViewBag.DanhSachGhe.Split(',').Length * 75000 : 0).ToString("N0")) đ</p>
+            <h4 class="text-warning fw-bold mb-0">TỔNG CỘNG: <span id="total-price">@((ViewBag.DanhSachGhe != null ? ViewBag.DanhSachGhe.Split(',').Length * 75000 : 0).ToString("N0"))</span> đ</h4>
+        </div>
+        <button class="btn btn-danger btn-lg fw-bold px-5 rounded-pill shadow" onclick="thanhToanCuoi()">TIẾP TỤC <i class="bi bi-arrow-right ms-2"></i></button>
+    </div>
+</div>
+
+<script>
+    let comboData = {}; // Object lưu danh sách các combo khách chọn
+    const giaVe = @(ViewBag.DanhSachGhe != null ? ViewBag.DanhSachGhe.Split(',').Length * 75000 : 0);
+
+    // Hàm JS mới cực kỳ linh hoạt
+    function updateQty(id, change, price, name) {
+        if (!comboData[id]) {
+            comboData[id] = { qty: 0, price: price, name: name };
+        }
+
+        comboData[id].qty = Math.max(0, comboData[id].qty + change);
+        document.getElementById('qty-' + id).innerText = comboData[id].qty;
+
+        calculateTotal();
+    }
+
+    function calculateTotal() {
+        let total = giaVe;
+        for (let key in comboData) {
+            total += comboData[key].qty * comboData[key].price;
+        }
+        document.getElementById('total-price').innerText = total.toLocaleString('vi-VN');
+    }
+
+    function thanhToanCuoi() {
+        let danhSachBapNuoc = [];
+        let totalComboPrice = 0;
+
+        for (let key in comboData) {
+            if (comboData[key].qty > 0) {
+                danhSachBapNuoc.push(comboData[key].qty + "x " + comboData[key].name);
+                totalComboPrice += (comboData[key].qty * comboData[key].price);
+            }
+        }
+
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '/Home/XacNhanThanhToan';
+
+        const data = {
+            'maPhim': '@ViewBag.MaPhim',
+            'suatId': '@ViewBag.SuatId',
+            'danhSachGhe': '@ViewBag.DanhSachGhe',
+            'tongTien': (giaVe + totalComboPrice),
+            'bapNuoc': danhSachBapNuoc.length > 0 ? danhSachBapNuoc.join(", ") : ""
+        };
+
+        for (const [key, value] of Object.entries(data)) {
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = key;
+            input.value = value;
+            form.appendChild(input);
+        }
+        document.body.appendChild(form);
+        form.submit();
+    }
+</script>

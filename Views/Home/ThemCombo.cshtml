@@ -1,0 +1,46 @@
+﻿@model CinemaWeb.Models.ComboBapNuoc
+
+@{
+    ViewData["Title"] = "Thêm Combo Bắp Nước";
+}
+
+<div class="container mt-5 text-white" style="max-width: 600px;">
+    <div class="p-4 rounded-4 shadow-lg border border-secondary" style="background-color: #141414;">
+        <h3 class="text-success fw-bold text-center mb-4 text-uppercase">
+            <i class="bi bi-cup-straw me-2"></i>THÊM COMBO BẮP NƯỚC
+        </h3>
+
+        <form asp-action="ThemCombo" method="post" enctype="multipart/form-data">
+
+            <div class="mb-3">
+                <label class="form-label text-secondary fw-bold">Tên Combo</label>
+                <input asp-for="TenCombo" class="form-control bg-dark text-white border-secondary" placeholder="VD: Premium CGV Combo" required />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label text-secondary fw-bold">Mô Tả Chi Tiết</label>
+                <textarea asp-for="MoTa" class="form-control bg-dark text-white border-secondary" rows="3" placeholder="VD: 1 Bắp Lớn + 2 Nước Lớn..." required></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label text-secondary fw-bold">Giá Bán (VNĐ)</label>
+                <input asp-for="Gia" type="number" class="form-control bg-dark text-white border-secondary" placeholder="VD: 135000" required />
+            </div>
+
+            <div class="mb-4">
+                <label class="form-label text-secondary fw-bold">Hình Ảnh (File .jpg, .png)</label>
+                <input type="file" name="FileAnhCombo" class="form-control bg-dark text-white border-secondary" accept="image/*" />
+                <small class="text-muted">Nên chọn ảnh vuông, nền trong suốt (PNG) để hiển thị đẹp nhất.</small>
+            </div>
+
+            <div class="d-flex gap-2 mt-4">
+                <button type="submit" class="btn btn-success w-50 fw-bold shadow">
+                    <i class="bi bi-plus-circle me-1"></i> TẠO COMBO
+                </button>
+                <a asp-action="AdminPhim" class="btn btn-outline-secondary w-50 fw-bold">
+                    HỦY BỎ
+                </a>
+            </div>
+        </form>
+    </div>
+</div>

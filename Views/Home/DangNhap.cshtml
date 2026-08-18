@@ -1,0 +1,21 @@
+﻿<div class="card bg-dark text-white p-4 mx-auto shadow-lg border-secondary" style="max-width: 400px; margin-top: 100px; border-radius: 15px;">
+    <h3 class="text-center text-danger fw-bold mb-4">ĐĂNG NHẬP</h3>
+    
+    @if (ViewBag.Error != null) {
+        <div class="alert alert-danger py-2 small">@ViewBag.Error</div>
+    }
+
+    <form asp-action="DangNhap" method="post">
+        <div class="mb-3">
+            <label class="form-label text-warning small fw-bold">TÀI KHOẢN:</label>
+            <input type="text" name="username" class="form-control bg-secondary text-white border-0" placeholder="Tên đăng nhập..." required>
+        </div>
+
+        <div class="mb-4">
+            <label class="form-label text-warning small fw-bold">MẬT KHẨU:</label>
+            <input type="password" name="password" class="form-control bg-secondary text-white border-0" placeholder="Mật khẩu..." required>
+        </div>
+        
+        <button type="submit" class="btn btn-danger w-100 fw-bold py-2 shadow">VÀO HỆ THỐNG</button>
+    </form>
+</div>

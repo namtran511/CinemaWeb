@@ -1,0 +1,73 @@
+﻿@model CinemaWeb.Models.Phim
+@{
+    ViewData["Title"] = "Thêm Phim Mới";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-7">
+            <div class="card bg-dark text-light border-danger shadow-lg">
+                <div class="card-header bg-danger text-white py-3">
+                    <h4 class="mb-0 text-center"><i class="bi bi-cloud-arrow-up-fill me-2"></i>THÊM PHIM MỚI</h4>
+                </div>
+                <div class="card-body p-4">
+                    @* LƯU Ý: Phải có enctype="multipart/form-data" mới up được ảnh *@
+                    <form asp-action="ThemPhim" method="post" enctype="multipart/form-data">
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold text-warning">Tên Bộ Phim</label>
+                            <input type="text" name="TenPhim" class="form-control bg-secondary text-white border-0" placeholder="VD: Lật Mặt 7" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold text-warning">Chọn Ảnh Poster (Từ máy tính)</label>
+                            <input type="file" name="FileAnh" class="form-control bg-secondary text-white border-0" accept="image/*" required>
+                            <div class="form-text text-light-50">Nên chọn ảnh có tỉ lệ dọc (2:3) để giao diện đẹp nhất.</div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold text-warning">Thời Lượng (Phút)</label>
+                                <input type="number" name="ThoiLuong" class="form-control bg-secondary text-white border-0" value="120" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold text-warning">Thể Loại</label>
+                                <input type="text" class="form-control bg-secondary text-white border-0" placeholder="Hành động, Hài...">
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold text-warning">Mô Tả Nội Dung</label>
+                            <textarea name="MoTa" class="form-control bg-secondary text-white border-0" rows="3" placeholder="Viết mô tả ngắn về phim..."></textarea>
+                        </div>
+
+                        @* --- PHẦN THÊM MỚI: NHẬP TRAILER --- *@
+                        <div class="mb-3">
+                            <label class="form-label fw-bold text-info">Mã Trailer YouTube (ID Video)</label>
+                            <input type="text" name="TrailerUrl" class="form-control bg-dark text-white border border-info"
+                                   placeholder="Ví dụ: dQw4w9WgXcQ">
+                            <div class="form-text text-info" style="font-size: 0.8rem;">
+                                <i class="bi bi-info-circle"></i> Chỉ lấy đoạn mã sau dấu <b>v=</b> (Ví dụ: youtube.com/watch?v=<b>dQw4w9WgXcQ</b>)
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label text-warning fw-bold">Trạng Thái Phim:</label>
+                            <select asp-for="TrangThai" class="form-select bg-secondary text-white border-0">
+                                <option value="Đang Chiếu">Đang Chiếu</option>
+                                <option value="Sắp Chiếu">Sắp Chiếu</option>
+                            </select>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-danger btn-lg fw-bold">
+                                <i class="bi bi-save me-2"></i>LƯU PHIM VÀO HỆ THỐNG
+                            </button>
+                            <a href="/Home/AdminPhim" class="btn btn-outline-secondary">Quay lại danh sách</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

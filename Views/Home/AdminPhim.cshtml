@@ -1,0 +1,237 @@
+﻿@model IEnumerable<CinemaWeb.Models.Phim>
+@{
+    ViewData["Title"] = "Trung Tâm Quản Trị";
+    var dsSuatChieu = ViewBag.DsSuatChieu as List<CinemaWeb.Models.SuatChieu>;
+    var dsVe = ViewBag.DsVe as List<CinemaWeb.Models.Ve>;
+
+    // Khai báo thêm danh sách Combo lấy từ Controller sang
+    var dsCombo = ViewBag.DsCombo as List<CinemaWeb.Models.ComboBapNuoc>;
+}
+
+<div class="content-wrapper mt-4 px-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold text-danger"><i class="bi bi-shield-lock-fill me-2"></i>HỆ THỐNG QUẢN TRỊ</h2>
+    </div>
+
+    <div class="mb-4 d-flex gap-2 flex-wrap">
+        <button class="btn btn-danger rounded-pill px-4 fw-bold tab-btn active" onclick="openTab(event, 'tab-phim')">
+            🎬 QUẢN LÝ PHIM
+        </button>
+        <button class="btn btn-outline-warning rounded-pill px-4 fw-bold tab-btn text-white" onclick="openTab(event, 'tab-suat')">
+            ⏰ QUẢN LÝ SUẤT CHIẾU
+        </button>
+        <button class="btn btn-outline-info rounded-pill px-4 fw-bold tab-btn text-white" onclick="openTab(event, 'tab-ve')">
+            🎫 QUẢN LÝ VÉ
+        </button>
+        <button class="btn btn-outline-success rounded-pill px-4 fw-bold tab-btn text-white" onclick="openTab(event, 'tab-combo')">
+            🍿 QUẢN LÝ COMBO
+        </button>
+    </div>
+
+    <hr class="border-secondary mb-4">
+
+    <div id="tab-phim" class="tab-content-item">
+        <div class="d-flex justify-content-end mb-3">
+            <a asp-action="ThemPhim" class="btn btn-success fw-bold btn-sm shadow"><i class="bi bi-plus-circle me-1"></i> Thêm Phim Mới</a>
+        </div>
+        <div class="table-responsive shadow-lg rounded">
+            <table class="table table-dark table-hover align-middle border border-secondary mb-0">
+                <thead class="bg-black">
+                    <tr><th class="ps-3">Poster</th><th>Tên Phim</th><th>Thời Lượng</th><th class="text-center">Thao Tác</th></tr>
+                </thead>
+                <tbody>
+                    @foreach (var p in Model)
+                    {
+                        <tr>
+                            <td class="ps-3"><img src="~/images/@p.HinhAnh" alt="@p.TenPhim" class="admin-thumbnail" onerror="this.src='/images/no-image.jpg';"></td>
+                            <td class="fw-bold text-white">@p.TenPhim</td>
+                            <td>@p.ThoiLuong phút</td>
+                            <td class="text-center">
+                                <a asp-action="SuaPhim" asp-route-id="@p.MaPhim" class="btn btn-sm btn-outline-info me-1"><i class="bi bi-pencil"></i></a>
+                                <form asp-action="XoaPhim" asp-route-id="@p.MaPhim" method="post" class="d-inline"><button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Xóa phim này?')"><i class="bi bi-trash"></i></button></form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="tab-suat" class="tab-content-item" style="display:none">
+        <div class="d-flex justify-content-end mb-3">
+            <a asp-action="ThemSuatChieu" class="btn btn-warning fw-bold btn-sm text-dark shadow"><i class="bi bi-plus-circle me-1"></i> Thêm Suất Chiếu</a>
+        </div>
+        <div class="table-responsive shadow-lg rounded">
+            <table class="table table-dark table-hover align-middle border border-secondary mb-0">
+                <thead class="bg-black">
+                    <tr><th class="ps-3">Tên Phim</th><th>Giờ Chiếu</th><th class="text-center">Thao Tác</th></tr>
+                </thead>
+                <tbody>
+                    @if (dsSuatChieu != null && dsSuatChieu.Any())
+                    {
+                        foreach (var s in dsSuatChieu)
+                        {
+                            <tr>
+                                <td class="ps-3 text-warning fw-bold">@(s.Phim?.TenPhim ?? "N/A")</td>
+                                <td>@s.ThoiGian</td>
+                                <td class="text-center">
+                                    <a asp-action="SuaSuatChieu" asp-route-id="@s.MaSuat" class="btn btn-sm btn-outline-info me-1"><i class="bi bi-pencil"></i></a>
+                                    <form asp-action="XoaSuatChieu" asp-route-id="@s.MaSuat" method="post" class="d-inline"><button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Xóa suất chiếu này?')"><i class="bi bi-trash"></i></button></form>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr><td colspan="3" class="text-center py-4 text-secondary">Chưa có suất chiếu nào.</td></tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="tab-ve" class="tab-content-item" style="display:none">
+        <div class="table-responsive shadow-lg rounded mt-3">
+            <table class="table table-dark table-hover align-middle border border-secondary mb-0">
+                <thead class="bg-black">
+                    <tr><th class="ps-3">Mã Vé</th><th>Phim</th><th class="text-warning">Giờ Chiếu</th><th>Ghế</th><th class="text-warning">Combo Bắp Nước</th><th>Trạng Thái</th><th class="text-center">Duyệt Vé</th></tr>
+                </thead>
+                <tbody>
+                    @if (dsVe != null && dsVe.Any())
+                    {
+                        foreach (var v in dsVe)
+                        {
+                            var suat = dsSuatChieu?.FirstOrDefault(s => s.MaSuat == v.SuatChieuId);
+                            var gioChieu = suat != null ? suat.ThoiGian : "Không rõ";
+                            <tr>
+                                <td class="ps-3">#@v.MaVe</td>
+                                <td class="text-info fw-bold">@v.TenPhim</td>
+                                <td><span class="badge bg-secondary">@gioChieu</span></td>
+                                <td><span class="badge bg-light text-dark">@v.TenGhe</span></td>
+                                <td class="text-warning fw-bold">@(string.IsNullOrEmpty(v.BapNuoc) ? Html.Raw("<span class='text-muted fw-normal'>Không đặt</span>") : v.BapNuoc)</td>
+                                <td>
+                                    @if (v.TrangThai == "Chờ thanh toán")
+                                    {
+                                        <span class="text-warning small"><i class="bi bi-clock-history me-1"></i>Đang chờ...</span>
+                                    }
+                                    else
+                                    {
+
+                                        <span class="text-success small"><i class="bi bi-check-circle-fill me-1"></i>Thành công</span>
+                                    }
+                                </td>
+                                <td class="text-center">
+                                    @if (v.TrangThai == "Chờ thanh toán")
+                                    {
+                                        <a asp-action="HoanTatThanhToan" asp-route-id="@v.MaVe" class="btn btn-sm btn-success px-3 fw-bold">DUYỆT NGAY</a>
+                                    }
+                                    else
+                                    {
+
+                                        <button class="btn btn-sm btn-secondary disabled px-3">Xong</button>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr><td colspan="7" class="text-center py-4 text-secondary">Chưa có dữ liệu đặt vé.</td></tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="tab-combo" class="tab-content-item" style="display:none">
+        <div class="d-flex justify-content-end mb-3">
+            <a asp-action="ThemCombo" class="btn btn-success fw-bold btn-sm shadow">
+                <i class="bi bi-plus-circle me-1"></i> Thêm Combo Mới
+            </a>
+        </div>
+        <div class="table-responsive shadow-lg rounded">
+            <table class="table table-dark table-hover align-middle border border-secondary mb-0">
+                <thead class="bg-black">
+                    <tr>
+                        <th class="ps-3">Hình Ảnh</th>
+                        <th>Tên Combo</th>
+                        <th>Mô Tả</th>
+                        <th>Giá Bán</th>
+                        <th class="text-center">Thao Tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (dsCombo != null && dsCombo.Any())
+                    {
+                        foreach (var c in dsCombo)
+                        {
+                            <tr>
+                                <td class="ps-3">
+                                    <img src="~/images/@c.HinhAnh" alt="@c.TenCombo" style="width: 60px; height: 60px; object-fit: contain; background: #222; border-radius: 5px;">
+                                </td>
+                                <td class="fw-bold text-warning">@c.TenCombo</td>
+                                <td class="small text-light">@c.MoTa</td>
+                                <td class="fw-bold text-white">@c.Gia.ToString("N0") VNĐ</td>
+                                <td class="text-center">
+                                    <form asp-action="XoaCombo" asp-route-id="@c.MaCombo" method="post" class="d-inline">
+                                        <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Xóa combo bắp nước này?')"><i class="bi bi-trash"></i></button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr><td colspan="5" class="text-center py-4 text-secondary">Chưa có combo nào. Bấm "Thêm Combo Mới" để tạo!</td></tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    function openTab(evt, tabName) {
+        var i, tabcontent, tablinks;
+        tabcontent = document.getElementsByClassName("tab-content-item");
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
+        }
+        tablinks = document.getElementsByClassName("tab-btn");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].classList.remove("active");
+            tablinks[i].classList.remove("btn-danger", "btn-warning", "btn-info", "btn-success");
+        }
+        document.getElementById(tabName).style.display = "block";
+        evt.currentTarget.classList.add("active");
+
+        // Đổi màu nút khi active cho đẹp
+        if(tabName === 'tab-phim') evt.currentTarget.classList.add("btn-danger");
+        if(tabName === 'tab-suat') evt.currentTarget.classList.add("btn-warning");
+        if(tabName === 'tab-ve') evt.currentTarget.classList.add("btn-info");
+        if(tabName === 'tab-combo') evt.currentTarget.classList.add("btn-success");
+    }
+</script>
+
+<style>
+    .tab-btn.active {
+        color: white !important;
+        border: none !important;
+    }
+
+    .table-dark {
+        background-color: #1a1a1a;
+    }
+
+    .admin-thumbnail {
+        width: 50px;
+        height: 70px;
+        object-fit: cover;
+        border-radius: 4px;
+        border: 1px solid #444;
+    }
+
+    .table td {
+        vertical-align: middle;
+    }
+</style>

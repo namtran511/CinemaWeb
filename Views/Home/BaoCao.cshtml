@@ -1,0 +1,144 @@
+﻿@model List<CinemaWeb.Models.ThongKeViewModel>
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Thống Kê Doanh Thu";
+    int selectedYear = ViewBag.SelectedYear ?? DateTime.Now.Year;
+
+    // Lấy doanh thu 12 tháng
+    var doanhThu12Thang = new List<double>();
+    for (int i = 1; i <= 12; i++)
+    {
+        var dataThang = Model?.FirstOrDefault(x => x.Thang == i);
+        doanhThu12Thang.Add(dataThang != null ? dataThang.DoanhThu : 0);
+    }
+}
+
+<div class="container-fluid p-4" style="min-height: 80vh;">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold text-danger"><i class="bi bi-bar-chart-fill me-2"></i>BÁO CÁO THỐNG KÊ</h2>
+        <button onclick="window.print()" class="btn btn-success fw-bold shadow">
+            <i class="bi bi-file-earmark-pdf me-1"></i> Xuất Báo Cáo (PDF)
+        </button>
+    </div>
+
+    <div class="card bg-dark border-secondary mb-4 shadow-lg">
+        <div class="card-body">
+            <form method="get" class="row g-3 align-items-center">
+                <div class="col-auto">
+                    <label class="text-white fw-bold">Chọn năm báo cáo:</label>
+                </div>
+                <div class="col-auto">
+                    <select name="nam" class="form-select bg-dark text-white border-secondary fw-bold">
+                        @for (int i = 2024; i <= 2026; i++)
+                        {
+                            <option value="@i" selected="@(i == selectedYear ? "selected" : null)">Năm @i</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-auto">
+                    <button type="submit" class="btn btn-danger px-4 fw-bold shadow">Xem Thống Kê</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="card bg-dark border-secondary shadow-lg">
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 id="chart-title" class="text-white fw-bold">Doanh Thu 12 Tháng - Năm @selectedYear</h5>
+                <button id="btn-back" class="btn btn-sm btn-outline-warning fw-bold" style="display:none;" onclick="quayLaiThang()">
+                    <i class="bi bi-arrow-return-left me-1"></i> Quay lại Xem Theo Tháng
+                </button>
+            </div>
+
+            <canvas id="revenueChart" style="max-height: 450px;"></canvas>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const ctx = document.getElementById('revenueChart').getContext('2d');
+
+    // Lưu lại dữ liệu gốc (12 tháng) để khi quay lại không cần gọi DB
+    const year = @selectedYear;
+    const labelsThang = ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6', 'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'];
+    const dataThang = @Json.Serialize(doanhThu12Thang);
+
+    let isShowingDays = false; // Cờ đánh dấu đang ở chế độ xem ngày hay tháng
+
+    // Khởi tạo biểu đồ
+    let myChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+    labels: labelsThang,
+    datasets: [{
+    label: 'Doanh thu (VNĐ)',
+    data: dataThang,
+    backgroundColor: 'rgba(229, 9, 20, 0.8)',
+    borderColor: '#e50914',
+    borderWidth: 2,
+    borderRadius: 4
+    }]
+    },
+    options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    // SỰ KIỆN CLICK VÀO CỘT THẦN THÁNH NẰM Ở ĐÂY
+    onClick: (e, elements) => {
+    // Nếu click trúng 1 cột và đang ở màn hình Tháng
+    if (elements.length > 0 && !isShowingDays) {
+    const index = elements[0].index; // Vị trí cột (0 -> 11)
+    const thangChon = index + 1;     // Tháng thực tế (1 -> 12)
+    xemChiTietNgay(thangChon);
+    }
+    },
+    // Đổi con trỏ chuột thành hình bàn tay khi di qua cột tháng
+    onHover: (event, chartElement) => {
+    event.native.target.style.cursor = chartElement[0] && !isShowingDays ? 'pointer' : 'default';
+    },
+    scales: {
+    y: { beginAtZero: true, grid: { color: 'rgba(255, 255, 255, 0.1)' }, ticks: { color: '#ccc' } },
+    x: { grid: { display: false }, ticks: { color: '#ccc', font: { weight: 'bold' } } }
+    },
+    plugins: { legend: { labels: { color: '#fff', font: { size: 14 } } } }
+    }
+    });
+
+    // Hàm gọi AJAX lấy dữ liệu từng ngày
+    function xemChiTietNgay(thang) {
+    // Gửi yêu cầu ngầm lên Controller
+    fetch(`/Home/GetDoanhThuNgayAjax?nam=${year}&thang=${thang}`)
+    .then(res => res.json())
+    .then(resData => {
+    // Tạo mảng nhãn từ Ngày 1 -> Ngày cuối tháng
+    let labelsNgay = [];
+    for(let i = 1; i <= resData.days; i++) labelsNgay.push("Ngày " + i);
+
+    // Cập nhật biểu đồ sang dữ liệu ngày
+    myChart.data.labels = labelsNgay;
+    myChart.data.datasets[0].data = resData.data;
+    myChart.data.datasets[0].backgroundColor = 'rgba(75, 192, 192, 0.8)'; // Đổi màu xanh lá cho khác bọt
+    myChart.data.datasets[0].borderColor = 'rgb(75, 192, 192)';
+    myChart.update();
+
+    // Đổi Tiêu đề và Hiện nút Quay Lại
+    document.getElementById('chart-title').innerText = `Chi Tiết Doanh Thu Tháng ${thang} - Năm ${year}`;
+    document.getElementById('btn-back').style.display = 'inline-block';
+    isShowingDays = true;
+    });
+    }
+
+    // Hàm quay trở lại xem 12 tháng
+    function quayLaiThang() {
+    myChart.data.labels = labelsThang;
+    myChart.data.datasets[0].data = dataThang;
+    myChart.data.datasets[0].backgroundColor = 'rgba(229, 9, 20, 0.8)'; // Trả về màu đỏ
+    myChart.data.datasets[0].borderColor = '#e50914';
+    myChart.update();
+
+    document.getElementById('chart-title').innerText = `Doanh Thu 12 Tháng - Năm ${year}`;
+    document.getElementById('btn-back').style.display = 'none';
+    isShowingDays = false;
+    }
+</script>

@@ -1,0 +1,34 @@
+﻿@model CinemaWeb.Models.SuatChieu
+@{ ViewData["Title"] = "Sửa Suất Chiếu"; }
+
+<div class="container mt-5 px-5">
+    <div class="card bg-dark text-white border-warning shadow-lg">
+        <div class="card-header bg-warning text-dark py-3">
+            <h4 class="mb-0 fw-bold text-center">CHỈNH SỬA SUẤT CHIẾU</h4>
+        </div>
+        <div class="card-body p-4">
+            <form asp-action="SuaSuatChieu" method="post">
+                <input type="hidden" asp-for="MaSuat" />
+
+                <div class="mb-4">
+                    <label class="form-label text-warning fw-bold">Chọn Phim:</label>
+                    <select asp-for="PhimId" class="form-select bg-secondary text-white border-0">
+                        @foreach (var p in ViewBag.Phims) {
+                            <option value="@p.MaPhim">@p.TenPhim</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label text-warning fw-bold">Thời Gian Chiếu:</label>
+                    <input type="text" asp-for="ThoiGian" class="form-control bg-secondary text-white border-0" required>
+                </div>
+
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-warning fw-bold text-dark">CẬP NHẬT SUẤT CHIẾU</button>
+                    <a asp-action="AdminPhim" class="btn btn-outline-secondary">Hủy bỏ</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

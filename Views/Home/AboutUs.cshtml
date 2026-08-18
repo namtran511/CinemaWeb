@@ -1,0 +1,103 @@
+﻿@model CinemaWeb.Models.Phim
+@{
+    ViewData["Title"] = "Về Chúng Tôi";
+}
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+<style>
+    /* Hiệu ứng làm tối bản đồ để hợp với giao diện Dark Mode */
+    .google-map-dark {
+        filter: grayscale(100%) invert(92%) contrast(83%);
+        border: 1px solid #333;
+        border-radius: 15px;
+        transition: 0.5s;
+    }
+
+        .google-map-dark:hover {
+            filter: grayscale(0%) invert(0%) contrast(100%);
+        }
+
+    .info-card {
+        transition: 0.3s;
+    }
+
+        .info-card:hover {
+            transform: translateY(-5px);
+        }
+</style>
+
+<div class="container mt-5 px-lg-5">
+    <div class="row align-items-center mb-5">
+        <div class="col-md-6">
+            <h1 class="display-4 fw-bold text-danger mb-4">CINEMA WEB 2026</h1>
+            <p class="fs-5 text-secondary">
+                Chúng tôi không chỉ bán vé, chúng tôi mang đến những trải nghiệm điện ảnh đỉnh cao.
+                Với hệ thống rạp hiện đại, âm thanh Dolby Atmos và sơ đồ ghế ngồi thông minh.
+            </p>
+            <div class="d-flex gap-3 mt-4">
+                <div class="text-center p-3 bg-dark rounded-3 border border-secondary" style="min-width: 100px;">
+                    <h3 class="fw-bold text-warning mb-0">50+</h3>
+                    <small class="text-secondary">Rạp chiếu</small>
+                </div>
+                <div class="text-center p-3 bg-dark rounded-3 border border-secondary" style="min-width: 100px;">
+                    <h3 class="fw-bold text-warning mb-0">1M+</h3>
+                    <small class="text-secondary">Khách hàng</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 text-center">
+            <img src="https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=600"
+                 class="img-fluid rounded-4 shadow-lg border border-secondary" alt="Cinema">
+        </div>
+    </div>
+
+    <hr class="border-secondary my-5">
+
+    <div class="row g-4 mb-5">
+        <div class="col-lg-4">
+            <div class="d-flex flex-column gap-4 h-100">
+                <div class="p-4 bg-dark rounded-4 border-start border-danger border-4 info-card">
+                    <h4 class="text-white mb-2">📍 ĐỊA CHỈ</h4>
+                    <p class="text-secondary small mb-0">Số 3 phố Cầu Giấy, Láng Thượng, Đống Đa, Hà Nội.</p>
+                    <a href="https://maps.app.goo.gl/3fRz3Z8X6K6v5L7U7" target="_blank" class="btn btn-link text-danger p-0 mt-2 small text-decoration-none">
+                        Mở Google Maps <i class="bi bi-box-arrow-up-right"></i>
+                    </a>
+                </div>
+                <div class="p-4 bg-dark rounded-4 border-start border-warning border-4 info-card">
+                    <h4 class="text-white mb-2">📞 LIÊN HỆ</h4>
+                    <p class="text-secondary small mb-0">Hotline: (84.24) 37663311<br>Email: dhgtvt@utc.edu.vn</p>
+                </div>
+                <div class="p-4 bg-dark rounded-4 border-start border-info border-4 info-card">
+                    <h4 class="text-white mb-2">⏰ GIỜ MỞ CỬA</h4>
+                    <p class="text-secondary small mb-0">Thứ 2 - Chủ Nhật<br>08:00 AM - 12:00 PM</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-8">
+            <div class="h-100 min-vh-50">
+                <iframe class="google-map-dark"
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3724.096814183571!2d105.8012318750314!3d21.02881188062061!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3135ab424a50fff9%3A0xbe3a7f36719a338a!2zU-G7kSAzIFBo4buRIENhdSBHaeG6pXksIEzDoW5nIFRoxrDhu6NuZywgxJDhu5FuZyDEkGEsIEjDoCBO4buZaSwgVmnhu4d0IE5hbQ!5e0!3m2!1svi!2s!4v1713324500000!5m2!1svi!2s"
+                        width="100%"
+                        height="100%"
+                        style="min-height: 400px; border:0;"
+                        allowfullscreen=""
+                        loading="lazy"
+                        referrerpolicy="no-referrer-when-downgrade">
+                </iframe>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-5 text-center p-5 bg-black rounded-4 border border-secondary shadow">
+        <h2 class="text-white fw-bold mb-3">Bạn muốn hợp tác với chúng tôi?</h2>
+        <p class="text-secondary mb-4">Hãy để lại lời nhắn, chúng tôi sẽ phản hồi trong vòng 24h.</p>
+
+        <a href="https://www.utc.edu.vn/"
+           target="_blank"
+           class="btn btn-danger px-5 py-2 rounded-pill fw-bold text-decoration-none shadow-sm">
+            GỬI TIN NHẮN <i class="bi bi-box-arrow-up-right ms-2"></i>
+        </a>
+    </div>
+</div>

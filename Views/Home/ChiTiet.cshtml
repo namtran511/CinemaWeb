@@ -1,0 +1,352 @@
+﻿@model CinemaWeb.Models.Phim
+
+@{
+    ViewData["Title"] = "Chi Tiết Phim - " + Model.TenPhim;
+    var suatChieus = ViewBag.SuatChieus as List<CinemaWeb.Models.SuatChieu>;
+}
+
+<style>
+    :root {
+        --netflix-red: #e50914;
+        --dark-bg: #141414;
+    }
+
+    body {
+        background-color: var(--dark-bg);
+        color: white;
+    }
+
+    .movie-detail-wrap {
+        padding: 60px 0;
+        background: linear-gradient(to bottom, rgba(20,20,20,0.8), var(--dark-bg)), url('/images/@Model.HinhAnh');
+        background-size: cover;
+        background-position: center;
+    }
+
+    .poster-detail {
+        border-radius: 10px;
+        width: 100%;
+        box-shadow: 0 0 30px rgba(0,0,0,0.5);
+    }
+
+    .cgv-tabs-wrap {
+        text-align: center;
+        margin: 30px 0;
+    }
+
+    .cgv-tabs {
+        display: inline-flex;
+        background: var(--netflix-red);
+        padding: 5px 30px;
+        position: relative;
+        z-index: 2;
+    }
+
+        .cgv-tabs::before {
+            left: -15px;
+            border-width: 17px 15px 17px 0;
+            border-color: transparent var(--netflix-red) transparent transparent;
+            content: "";
+            position: absolute;
+            top: 0;
+        }
+
+        .cgv-tabs::after {
+            right: -15px;
+            border-width: 17px 0 17px 15px;
+            border-color: transparent transparent transparent var(--netflix-red);
+            content: "";
+            position: absolute;
+            top: 0;
+        }
+
+    .tab-item {
+        color: white;
+        text-decoration: none;
+        padding: 0 15px;
+        cursor: pointer;
+        font-weight: bold;
+    }
+
+        .tab-item.active {
+            color: #f8de7e;
+            text-decoration: underline;
+        }
+
+    .content-section {
+        display: none;
+        animation: fadeIn 0.5s;
+    }
+
+        .content-section.active {
+            display: block;
+        }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
+    }
+
+    .screen {
+        width: 80%;
+        height: 5px;
+        background: #e50914;
+        margin: 20px auto;
+        box-shadow: 0 5px 15px rgba(229, 9, 20, 0.5);
+        border-radius: 5px;
+    }
+
+    .seat {
+        width: 35px;
+        height: 35px;
+        margin: 5px;
+        font-size: 11px;
+        font-weight: bold;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: 0.2s;
+    }
+
+    html {
+        scroll-behavior: smooth;
+    }
+
+    .trailer-container {
+        position: relative;
+        width: 100%;
+        padding-top: 56.25%; /* Tỉ lệ 16:9 */
+        background-color: #000;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+    }
+
+        .trailer-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+</style>
+
+<div class="movie-detail-wrap">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <img src="~/images/@Model.HinhAnh" class="poster-detail" onerror="this.src='/images/no-image.jpg';">
+                <button onclick="cuonDenLichChieu()" class="btn btn-danger w-100 mt-3 fw-bold py-2 shadow border-0">
+                    <i class="bi bi-ticket-perforated me-2"></i>MUA VÉ
+                </button>
+            </div>
+
+            <div class="col-md-8">
+                <h1 class="display-5 fw-bold text-uppercase">@Model.TenPhim</h1>
+                <p><strong>Thời lượng:</strong> @Model.ThoiLuong phút</p>
+
+                <div class="cgv-tabs-wrap">
+                    <div class="cgv-tabs">
+                        <span class="tab-item active" onclick="switchTab('detail', this)">Chi tiết</span>
+                        <div class="divider"></div>
+                        <span class="tab-item" onclick="switchTab('trailer', this)">Trailer</span>
+                    </div>
+                </div>
+
+                <div id="detail" class="content-section active">
+                    <div class="p-3 border border-secondary rounded mb-4" style="background: rgba(255,255,255,0.05)">
+                        @Model.MoTa
+                    </div>
+
+                    <h4 id="vung-lich-chieu" class="text-warning border-start border-4 border-danger ps-2">LỊCH CHIẾU</h4>
+                    <div class="d-flex flex-wrap gap-2 mt-3">
+                        @if (suatChieus != null && suatChieus.Any())
+                        {
+                            foreach (var s in suatChieus)
+                            {
+                                var parts = s.ThoiGian.Split('-');
+                                bool isPast = false;
+                                if (parts.Length > 1)
+                                {
+                                    DateTime dtSuat;
+                                    if (DateTime.TryParseExact(parts[1].Trim(), "d/M/yyyy", null, System.Globalization.DateTimeStyles.None, out dtSuat))
+                                    {
+                                        if (dtSuat.Date < DateTime.Now.Date) isPast = true;
+                                    }
+                                }
+
+                                if (isPast)
+                                {
+                                    <button class="btn btn-secondary px-3 opacity-50" disabled>
+                                        <i class="bi bi-clock-history me-1"></i> @s.ThoiGian (Hết hạn)
+                                    </button>
+                                }
+                                else
+                                {
+                                    <button class="btn btn-outline-light px-3" onclick="chonSuatChieu(@s.MaSuat, '@s.ThoiGian')">
+                                        <i class="bi bi-clock me-1"></i> @s.ThoiGian
+                                    </button>
+                                }
+                            }
+                        }
+                        else
+                        {
+                            <p class="text-secondary small">Hiện tại chưa có lịch chiếu.</p>
+                        }
+                    </div>
+
+                    <div id="booking-area" class="mt-5 p-4 rounded-4" style="display:none; background: rgba(0,0,0,0.5); border: 1px solid #333;">
+                        <div class="text-center">
+                            <small class="text-secondary text-uppercase fw-bold">Màn hình</small>
+                            <div class="screen"></div>
+                        </div>
+
+                        <div id="seat-map" class="d-flex flex-wrap justify-content-center mt-4">
+                        </div>
+
+                        <div class="mt-4 d-flex justify-content-center gap-3 small text-secondary">
+                            <span><i class="bi bi-square-fill text-secondary"></i> Trống</span>
+                            <span><i class="bi bi-square-fill text-danger"></i> Đã đặt</span>
+                            <span><i class="bi bi-square-fill text-warning"></i> Đang chọn</span>
+                        </div>
+
+                        <div class="text-center mt-4">
+                            <h5 class="text-white">Ghế đang chọn: <span id="selected-seats" class="text-warning">Chưa chọn</span></h5>
+                            <button class="btn btn-danger btn-lg px-5 mt-2 fw-bold rounded-pill" onclick="xacNhanDatVe()">
+                                TIẾP TỤC
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="trailer" class="content-section mt-4">
+                    @if (!string.IsNullOrEmpty(Model.TrailerUrl))
+                    {
+                        var tUrl = Model.TrailerUrl;
+
+                        // ĐOẠN CODE "THẦN THÁNH" XỬ LÝ LINK YOUTUBE Ở ĐÂY SƠN NHÉ
+                        if (tUrl.Contains("watch?v="))
+                        {
+                            // Thay đổi định dạng sang link nhúng (embed)
+                            tUrl = tUrl.Replace("watch?v=", "embed/");
+
+                            // Tìm và cắt bỏ cái đuôi tham số thừa (nếu có dấu &)
+                            int viTriVa = tUrl.IndexOf("&");
+                            if (viTriVa > 0)
+                            {
+                                tUrl = tUrl.Substring(0, viTriVa);
+                            }
+                        }
+
+                        <div class="trailer-container">
+                            <iframe src="@tUrl" title="Trailer" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="trailer-container d-flex flex-column align-items-center justify-content-center text-secondary border border-secondary">
+                            <i class="bi bi-play-btn-fill display-1 mt-5"></i>
+                            <p class="mt-2 fs-5">Trailer đang được cập nhật...</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let selectedGhes = [];
+    let currentSuatId = 0;
+    let intervalUpdate = null;
+
+    function cuonDenLichChieu() {
+        switchTab('detail', document.querySelector('.tab-item:first-child'));
+        document.getElementById('vung-lich-chieu').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function chonSuatChieu(id, time) {
+        currentSuatId = id;
+        document.getElementById('booking-area').style.display = 'block';
+        capNhatGheRealtime();
+        if (intervalUpdate) clearInterval(intervalUpdate);
+        intervalUpdate = setInterval(capNhatGheRealtime, 5000);
+        document.getElementById('booking-area').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function capNhatGheRealtime() {
+        fetch(`/Home/LayDanhSachGheAjax?suatId=${currentSuatId}`)
+            .then(response => response.json())
+            .then(data => {
+                const seatMap = document.getElementById('seat-map');
+                const selectedBefore = [...selectedGhes];
+                seatMap.innerHTML = '';
+
+                data.forEach(ghe => {
+                    const btn = document.createElement('button');
+                    let isBooked = (ghe.trangThai === 'DaDat');
+                    let isSelecting = selectedBefore.includes(ghe.tenGhe);
+                    let colorClass = isBooked ? 'btn-danger disabled' : (isSelecting ? 'btn-warning' : 'btn-outline-secondary');
+
+                    btn.className = `seat btn ${colorClass}`;
+                    btn.innerText = ghe.tenGhe;
+
+                    if (!isBooked) {
+                        btn.onclick = () => toggleSeat(btn, ghe.tenGhe);
+                    }
+                    seatMap.appendChild(btn);
+                });
+            });
+    }
+
+    function toggleSeat(btn, name) {
+        if (btn.classList.contains('btn-outline-secondary')) {
+            btn.classList.replace('btn-outline-secondary', 'btn-warning');
+            selectedGhes.push(name);
+        } else if (btn.classList.contains('btn-warning')) {
+            btn.classList.replace('btn-warning', 'btn-outline-secondary');
+            selectedGhes = selectedGhes.filter(g => g !== name);
+        }
+        document.getElementById('selected-seats').innerText = selectedGhes.length > 0 ? selectedGhes.join(', ') : 'Chưa chọn';
+    }
+
+    function xacNhanDatVe() {
+        if (selectedGhes.length === 0) {
+            alert("Sơn ơi, chọn ít nhất 1 ghế đã nhé!");
+            return;
+        }
+
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '/Home/ChonBapNuoc';
+
+        const inputs = {
+            'maPhim': '@Model.MaPhim',
+            'suatId': currentSuatId,
+            'danhSachGhe': selectedGhes.join(',')
+        };
+
+        for (const [key, value] of Object.entries(inputs)) {
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = key;
+            input.value = value;
+            form.appendChild(input);
+        }
+
+        document.body.appendChild(form);
+        form.submit();
+    }
+
+    function switchTab(tabName, element) {
+        document.querySelectorAll('.content-section').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.tab-item').forEach(el => el.classList.remove('active'));
+        document.getElementById(tabName).classList.add('active');
+        element.classList.add('active');
+    }
+</script>

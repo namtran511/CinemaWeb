@@ -1,0 +1,290 @@
+﻿@model List<CinemaWeb.Models.Phim>
+
+@{
+    ViewData["Title"] = "Trang Chủ - The Cinema";
+    var phimSapChieu = ViewBag.PhimSapChieu as List<CinemaWeb.Models.Phim>;
+    var searchString = Context.Request.Query["searchString"];
+}
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+
+<style>
+    :root {
+        --netflix-red: #e50914;
+        --dark-bg: #141414;
+        --card-bg: #1f1f1f;
+        --text-white: #ffffff;
+    }
+
+    body {
+        background-color: var(--dark-bg);
+        color: var(--text-white);
+        font-family: 'Inter', sans-serif;
+    }
+
+    .hero-wrap {
+        position: relative;
+        height: 500px;
+        background: linear-gradient(to bottom, rgba(20,20,20,0.4), var(--dark-bg)), url('/images/herowrap.jpg');
+        background-size: cover;
+        background-position: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+    }
+
+    .hero-content h1 {
+        font-size: 4.5rem;
+        font-weight: 900;
+        letter-spacing: -2px;
+        text-shadow: 0 5px 20px rgba(0,0,0,0.8);
+    }
+
+    .search-box-wrap {
+        max-width: 600px;
+        margin: 30px auto 0;
+    }
+
+    .glass-search {
+        background: rgba(0, 0, 0, 0.6) !important;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2) !important;
+        border-radius: 50px !important;
+        padding: 5px;
+        transition: 0.3s;
+    }
+
+        .glass-search:focus-within {
+            border-color: var(--netflix-red) !important;
+            box-shadow: 0 0 20px rgba(229, 9, 20, 0.4);
+        }
+
+        .glass-search input {
+            background: transparent !important;
+            border: none !important;
+            color: white !important;
+            padding-left: 20px !important;
+            box-shadow: none !important;
+        }
+
+    .btn-red {
+        background: var(--netflix-red) !important;
+        border: none !important;
+        border-radius: 40px !important;
+        padding: 10px 30px !important;
+        font-weight: bold;
+    }
+
+    .main-content {
+        width: 96%;
+        max-width: 1700px;
+        margin: -60px auto 0;
+        position: relative;
+        z-index: 5;
+    }
+
+    .section-title {
+        font-size: 1.8rem;
+        font-weight: 800;
+        margin-bottom: 30px;
+        border-left: 5px solid var(--netflix-red);
+        padding-left: 15px;
+        text-transform: uppercase;
+    }
+
+    .movie-card {
+        background: #1a1a1a;
+        border: 1px solid #2a2a2a;
+        border-radius: 12px;
+        overflow: hidden;
+        transition: 0.4s;
+        height: 100%;
+    }
+
+        .movie-card:hover {
+            transform: translateY(-10px);
+            border-color: #444;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.7);
+        }
+
+    .poster-box {
+        position: relative;
+        aspect-ratio: 2/3;
+        overflow: hidden;
+    }
+
+    .movie-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: 0.5s;
+    }
+
+    .movie-card:hover .movie-img {
+        transform: scale(1.1);
+    }
+
+    .badge-time {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: rgba(229, 9, 20, 0.85);
+        padding: 3px 8px;
+        border-radius: 4px;
+        font-size: 0.75rem;
+        font-weight: bold;
+    }
+
+    .card-info {
+        padding: 20px 15px;
+    }
+
+    .movie-name {
+        font-size: 1.1rem;
+        font-weight: 800;
+        color: white !important;
+        text-transform: uppercase;
+        margin-bottom: 5px;
+        display: -webkit-box;
+        -webkit-line-clamp: 1;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        min-height: 1.5em;
+    }
+
+    /* Tùy chỉnh nút bấm mới */
+    .btn-group-movie {
+        display: flex;
+        gap: 8px;
+        margin-top: 15px;
+    }
+
+    .btn-outline-custom {
+        border: 1px solid #444;
+        color: white;
+        flex: 1;
+        padding: 8px 5px;
+        border-radius: 6px;
+        font-weight: 600;
+        font-size: 0.75rem;
+        transition: 0.3s;
+        text-decoration: none;
+    }
+
+        .btn-outline-custom:hover {
+            background: white;
+            color: black;
+        }
+
+    .btn-red-custom {
+        background: var(--netflix-red);
+        color: white;
+        flex: 1;
+        padding: 8px 5px;
+        border-radius: 6px;
+        font-weight: 600;
+        font-size: 0.75rem;
+        transition: 0.3s;
+        text-decoration: none;
+        border: none;
+    }
+
+        .btn-red-custom:hover {
+            background: #b20710;
+            color: white;
+            box-shadow: 0 0 10px rgba(229, 9, 20, 0.5);
+        }
+</style>
+
+<div class="hero-wrap">
+    <div class="hero-content">
+        <h1>THE<span style="color: var(--netflix-red)">CINEMA</span></h1>
+        <p class="lead text-secondary">Phim hay không đợi một ai - Đặt vé ngay hôm nay!</p>
+
+        <div class="search-box-wrap">
+            <form asp-action="Index" method="get">
+                <div class="input-group glass-search">
+                    <input type="text" name="searchString" class="form-control"
+                           placeholder="Tìm tên phim m muốn xem..." value="@searchString">
+                    <button class="btn btn-red text-white" type="submit">TÌM KIẾM</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="main-content">
+    <h2 class="section-title">Phim Đang Chiếu</h2>
+
+    @if (!Model.Any())
+    {
+        <div class="text-center py-5 border border-secondary rounded border-dashed">
+            <p class="text-secondary">Không có phim bạn cần tìm rồi!</p>
+            <a href="@Url.Action("Index")" class="text-danger">Quay lại trang chính</a>
+        </div>
+    }
+    else
+    {
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 g-4">
+            @foreach (var phim in Model)
+            {
+                <div class="col">
+                    <div class="movie-card">
+                        <div class="poster-box">
+                            <a href="@Url.Action("ChiTiet", "Home", new { id = phim.MaPhim })">
+                                <img src="~/images/@phim.HinhAnh" class="movie-img" alt="@phim.TenPhim"
+                                     onerror="this.src='/images/no-image.jpg';">
+                            </a>
+                            <div class="badge-time">
+                                <i class="bi bi-clock-fill"></i> @phim.ThoiLuong P
+                            </div>
+                        </div>
+                        <div class="card-info text-center">
+                            <div class="movie-name">@phim.TenPhim</div>
+                            <div class="small text-secondary mb-1">
+                                <i class="bi bi-star-fill text-warning"></i> 2D / Digital
+                            </div>
+
+                            <div class="btn-group-movie">
+                                <a href="@Url.Action("ChiTiet", "Home", new { id = phim.MaPhim })" class="btn-outline-custom">
+                                    CHI TIẾT
+                                </a>
+                                <a href="@Url.Action("ChiTiet", "Home", new { id = phim.MaPhim })" class="btn-red-custom">
+                                    ĐẶT VÉ
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+
+    @if (phimSapChieu != null && phimSapChieu.Any() && string.IsNullOrEmpty(searchString))
+    {
+        <h2 class="section-title mt-5" style="border-color: #f39c12">Phim Sắp Ra Mắt</h2>
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 g-4 pb-5">
+            @foreach (var phim in phimSapChieu)
+            {
+                <div class="col" style="opacity: 0.8;">
+                    <div class="movie-card">
+                        <div class="poster-box">
+                            <a href="@Url.Action("ChiTiet", "Home", new { id = phim.MaPhim })">
+                                <img src="~/images/@phim.HinhAnh" class="movie-img" alt="@phim.TenPhim">
+                            </a>
+                        </div>
+                        <div class="card-info text-center">
+                            <div class="movie-name text-warning">@phim.TenPhim</div>
+                            <p class="small text-muted mb-2">Coming Soon</p>
+                            <a href="@Url.Action("ChiTiet", "Home", new { id = phim.MaPhim })" class="btn-outline-custom d-block">
+                                XEM THÔNG TIN
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
