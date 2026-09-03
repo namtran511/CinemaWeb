@@ -59,7 +59,7 @@ namespace CinemaWeb.Services
         private readonly CinemaDbContext _context;
         public CinemaService(CinemaDbContext context) => _context = context;
 
-        public List<Phim> LayPhimDangChieu() => _context.Phims.Where(p => p.TrangThai == "Đang Chiếu").ToList();
-        public List<Phim> LayPhimSapChieu() => _context.Phims.Where(p => p.TrangThai == "Sắp Chiếu").ToList();
+        public List<Phim> LayPhimDangChieu() => _context.Phims.Where(p => p.TrangThai == CinemaStatus.PhimDangChieu).ToList();
+        public List<Phim> LayPhimSapChieu() => _context.Phims.Where(p => p.TrangThai == CinemaStatus.PhimSapChieu).ToList();
     }
 }

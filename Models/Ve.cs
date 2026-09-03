@@ -20,7 +20,7 @@ namespace CinemaWeb.Models
 
         public double TongTien { get; set; }
         public DateTime NgayDat { get; set; } = DateTime.Now;
-        public string TrangThai { get; set; } = "Đã thanh toán";
+        public string TrangThai { get; set; } = CinemaStatus.VeDaThanhToan;
 
         public Ve() { }
 

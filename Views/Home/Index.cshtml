@@ -1,9 +1,8 @@
-﻿@model List<CinemaWeb.Models.Phim>
+@model CinemaWeb.Models.IndexViewModel
 
 @{
     ViewData["Title"] = "Trang Chủ - The Cinema";
-    var phimSapChieu = ViewBag.PhimSapChieu as List<CinemaWeb.Models.Phim>;
-    var searchString = Context.Request.Query["searchString"];
+    var searchString = Model.SearchString;
 }
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
@@ -218,7 +217,7 @@
 <div class="main-content">
     <h2 class="section-title">Phim Đang Chiếu</h2>
 
-    @if (!Model.Any())
+    @if (!Model.PhimDangChieu.Any())
     {
         <div class="text-center py-5 border border-secondary rounded border-dashed">
             <p class="text-secondary">Không có phim bạn cần tìm rồi!</p>
@@ -228,7 +227,7 @@
     else
     {
         <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 g-4">
-            @foreach (var phim in Model)
+            @foreach (var phim in Model.PhimDangChieu)
             {
                 <div class="col">
                     <div class="movie-card">
@@ -262,11 +261,11 @@
         </div>
     }
 
-    @if (phimSapChieu != null && phimSapChieu.Any() && string.IsNullOrEmpty(searchString))
+    @if (Model.PhimSapChieu.Any() && string.IsNullOrEmpty(searchString))
     {
         <h2 class="section-title mt-5" style="border-color: #f39c12">Phim Sắp Ra Mắt</h2>
         <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 g-4 pb-5">
-            @foreach (var phim in phimSapChieu)
+            @foreach (var phim in Model.PhimSapChieu)
             {
                 <div class="col" style="opacity: 0.8;">
                     <div class="movie-card">

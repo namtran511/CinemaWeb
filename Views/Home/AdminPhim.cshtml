@@ -64,7 +64,7 @@
         <div class="table-responsive shadow-lg rounded">
             <table class="table table-dark table-hover align-middle border border-secondary mb-0">
                 <thead class="bg-black">
-                    <tr><th class="ps-3">Tên Phim</th><th>Giờ Chiếu</th><th class="text-center">Thao Tác</th></tr>
+                    <tr><th class="ps-3">Tên Phim</th><th>Phòng</th><th>Giờ Chiếu</th><th class="text-center">Thao Tác</th></tr>
                 </thead>
                 <tbody>
                     @if (dsSuatChieu != null && dsSuatChieu.Any())
@@ -73,6 +73,7 @@
                         {
                             <tr>
                                 <td class="ps-3 text-warning fw-bold">@(s.Phim?.TenPhim ?? "N/A")</td>
+                                <td><span class="badge bg-warning text-dark">Phòng @s.PhongChieu</span></td>
                                 <td>@s.ThoiGian</td>
                                 <td class="text-center">
                                     <a asp-action="SuaSuatChieu" asp-route-id="@s.MaSuat" class="btn btn-sm btn-outline-info me-1"><i class="bi bi-pencil"></i></a>
@@ -83,7 +84,7 @@
                     }
                     else
                     {
-                        <tr><td colspan="3" class="text-center py-4 text-secondary">Chưa có suất chiếu nào.</td></tr>
+                        <tr><td colspan="4" class="text-center py-4 text-secondary">Chưa có suất chiếu nào.</td></tr>
                     }
                 </tbody>
             </table>
@@ -103,10 +104,17 @@
                         {
                             var suat = dsSuatChieu?.FirstOrDefault(s => s.MaSuat == v.SuatChieuId);
                             var gioChieu = suat != null ? suat.ThoiGian : "Không rõ";
+                            var phongChieu = suat != null ? suat.PhongChieu : 0;
                             <tr>
                                 <td class="ps-3">#@v.MaVe</td>
                                 <td class="text-info fw-bold">@v.TenPhim</td>
-                                <td><span class="badge bg-secondary">@gioChieu</span></td>
+                                <td>
+                                    <span class="badge bg-secondary">@gioChieu</span>
+                                    @if (phongChieu > 0)
+                                    {
+                                        <span class="badge bg-warning text-dark ms-1">Phòng @phongChieu</span>
+                                    }
+                                </td>
                                 <td><span class="badge bg-light text-dark">@v.TenGhe</span></td>
                                 <td class="text-warning fw-bold">@(string.IsNullOrEmpty(v.BapNuoc) ? Html.Raw("<span class='text-muted fw-normal'>Không đặt</span>") : v.BapNuoc)</td>
                                 <td>

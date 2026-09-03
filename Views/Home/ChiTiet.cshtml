@@ -169,27 +169,23 @@
                         {
                             foreach (var s in suatChieus)
                             {
-                                var parts = s.ThoiGian.Split('-');
-                                bool isPast = false;
-                                if (parts.Length > 1)
+                                var thoiGianText = s.ThoiGian;
+                                var isPast = false;
+                                if (ShowTimeHelper.TryParse(s.ThoiGian, out var dtSuat))
                                 {
-                                    DateTime dtSuat;
-                                    if (DateTime.TryParseExact(parts[1].Trim(), "d/M/yyyy", null, System.Globalization.DateTimeStyles.None, out dtSuat))
-                                    {
-                                        if (dtSuat.Date < DateTime.Now.Date) isPast = true;
-                                    }
+                                    isPast = dtSuat <= DateTime.Now;
                                 }
 
                                 if (isPast)
                                 {
                                     <button class="btn btn-secondary px-3 opacity-50" disabled>
-                                        <i class="bi bi-clock-history me-1"></i> @s.ThoiGian (Hết hạn)
+                                        <i class="bi bi-clock-history me-1"></i> @thoiGianText (Hết hạn)
                                     </button>
                                 }
                                 else
                                 {
-                                    <button class="btn btn-outline-light px-3" onclick="chonSuatChieu(@s.MaSuat, '@s.ThoiGian')">
-                                        <i class="bi bi-clock me-1"></i> @s.ThoiGian
+                                    <button class="btn btn-outline-light px-3" onclick="chonSuatChieu(@s.MaSuat, '@thoiGianText')">
+                                        <i class="bi bi-clock me-1"></i> @thoiGianText <span class="text-warning ms-2">(Phòng @s.PhongChieu)</span>
                                     </button>
                                 }
                             }

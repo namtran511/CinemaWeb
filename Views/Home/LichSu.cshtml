@@ -18,7 +18,7 @@
                     <tr>
                         <th class="ps-4">Mã Vé</th>
                         <th>Tên Phim</th>
-                        <th class="text-info">Suất Chiếu</th> @* Thêm cột Suất Chiếu *@
+                        <th class="text-info">Suất Chiếu</th>
                         <th>Số Ghế</th>
                         <th class="text-warning">Combo Bắp Nước</th> @* Thêm cột Bắp Nước *@
                         <th>Thời Gian Đặt</th>
@@ -34,6 +34,7 @@
                             // Tìm giờ chiếu tương ứng
                             var suat = dsSuat?.FirstOrDefault(s => s.MaSuat == v.SuatChieuId);
                             var gioChieu = suat != null ? suat.ThoiGian : "Không rõ";
+                            var phongChieu = suat != null ? suat.PhongChieu : 0;
 
                             <tr>
                                 <td class="ps-4 fw-bold text-secondary">#@v.MaVe</td>
@@ -42,6 +43,10 @@
                                 @* HIỂN THỊ GIỜ CHIẾU *@
                                 <td>
                                     <span class="badge bg-info text-dark">@gioChieu</span>
+                                    @if (phongChieu > 0)
+                                    {
+                                        <span class="badge bg-secondary ms-1">Phòng @phongChieu</span>
+                                    }
                                 </td>
 
                                 <td><span class="badge bg-secondary">@v.TenGhe</span></td>

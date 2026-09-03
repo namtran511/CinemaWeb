@@ -206,6 +206,12 @@
                 <a class="nav-link" asp-controller="Home" asp-action="Index">
                     <i class="bi bi-house-door"></i> <span class="link-text">Trang Chủ</span>
                 </a>
+                @if (role != "Quản Lý" && role != "Admin")
+                {
+                    <a class="nav-link" asp-controller="Home" asp-action="GoiYPhim">
+                        <i class="bi bi-lightbulb"></i> <span class="link-text">Gợi Ý Phim</span>
+                    </a>
+                }
                 @if (role == "Quản Lý" || role == "Admin")
                 {
                     <a class="nav-link" asp-controller="Home" asp-action="AdminPhim">

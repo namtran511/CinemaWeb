@@ -7,6 +7,11 @@
             <h4 class="mb-0 fw-bold text-center">CHỈNH SỬA SUẤT CHIẾU</h4>
         </div>
         <div class="card-body p-4">
+            @if (ViewBag.Error != null)
+            {
+                <div class="alert alert-danger">@ViewBag.Error</div>
+            }
+
             <form asp-action="SuaSuatChieu" method="post">
                 <input type="hidden" asp-for="MaSuat" />
 
@@ -20,8 +25,18 @@
                 </div>
 
                 <div class="mb-4">
+                    <label class="form-label text-warning fw-bold">Phòng Chiếu:</label>
+                    <select asp-for="PhongChieu" class="form-select bg-secondary text-white border-0">
+                        @for (var i = 1; i <= 9; i++)
+                        {
+                            <option value="@i">Phòng @i</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="mb-4">
                     <label class="form-label text-warning fw-bold">Thời Gian Chiếu:</label>
-                    <input type="text" asp-for="ThoiGian" class="form-control bg-secondary text-white border-0" required>
+                    <input type="datetime-local" asp-for="ThoiGian" class="form-control bg-secondary text-white border-0" required>
                 </div>
 
                 <div class="d-grid gap-2">

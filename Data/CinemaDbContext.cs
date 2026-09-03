@@ -21,22 +21,22 @@ namespace CinemaWeb.Data
 
            
             modelBuilder.Entity<Ghe>().HasData(
-                new Ghe { MaGhe = 1, TenGhe = "A1", TrangThai = "Trong" },
-                new Ghe { MaGhe = 2, TenGhe = "A2", TrangThai = "Trong" },
-                new Ghe { MaGhe = 3, TenGhe = "A3", TrangThai = "Trong" },
-                new Ghe { MaGhe = 4, TenGhe = "A4", TrangThai = "Trong" },
-                new Ghe { MaGhe = 5, TenGhe = "A5", TrangThai = "Trong" },
-                new Ghe { MaGhe = 6, TenGhe = "A6", TrangThai = "Trong" },
-                new Ghe { MaGhe = 7, TenGhe = "A7", TrangThai = "Trong" },
-                new Ghe { MaGhe = 8, TenGhe = "A8", TrangThai = "Trong" },
-                new Ghe { MaGhe = 9, TenGhe = "A9", TrangThai = "Trong" },
-                new Ghe { MaGhe = 10, TenGhe = "A10", TrangThai = "Trong" },
-                new Ghe { MaGhe = 11, TenGhe = "A11", TrangThai = "Trong" },
-                new Ghe { MaGhe = 12, TenGhe = "A12", TrangThai = "Trong" },
-                new Ghe { MaGhe = 13, TenGhe = "A13", TrangThai = "Trong" },
-                new Ghe { MaGhe = 14, TenGhe = "A14", TrangThai = "Trong" },
-                new Ghe { MaGhe = 15, TenGhe = "A15", TrangThai = "Trong" },
-                new Ghe { MaGhe = 16, TenGhe = "A16", TrangThai = "Trong" }
+                new Ghe { MaGhe = 1, TenGhe = "A1", TrangThai = CinemaStatus.GheTrong },
+                new Ghe { MaGhe = 2, TenGhe = "A2", TrangThai = CinemaStatus.GheTrong },
+                new Ghe { MaGhe = 3, TenGhe = "A3", TrangThai = CinemaStatus.GheTrong },
+                new Ghe { MaGhe = 4, TenGhe = "A4", TrangThai = CinemaStatus.GheTrong },
+                new Ghe { MaGhe = 5, TenGhe = "A5", TrangThai = CinemaStatus.GheTrong },
+                new Ghe { MaGhe = 6, TenGhe = "A6", TrangThai = CinemaStatus.GheTrong },
+                new Ghe { MaGhe = 7, TenGhe = "A7", TrangThai = CinemaStatus.GheTrong },
+                new Ghe { MaGhe = 8, TenGhe = "A8", TrangThai = CinemaStatus.GheTrong },
+                new Ghe { MaGhe = 9, TenGhe = "A9", TrangThai = CinemaStatus.GheTrong },
+                new Ghe { MaGhe = 10, TenGhe = "A10", TrangThai = CinemaStatus.GheTrong },
+                new Ghe { MaGhe = 11, TenGhe = "A11", TrangThai = CinemaStatus.GheTrong },
+                new Ghe { MaGhe = 12, TenGhe = "A12", TrangThai = CinemaStatus.GheTrong },
+                new Ghe { MaGhe = 13, TenGhe = "A13", TrangThai = CinemaStatus.GheTrong },
+                new Ghe { MaGhe = 14, TenGhe = "A14", TrangThai = CinemaStatus.GheTrong },
+                new Ghe { MaGhe = 15, TenGhe = "A15", TrangThai = CinemaStatus.GheTrong },
+                new Ghe { MaGhe = 16, TenGhe = "A16", TrangThai = CinemaStatus.GheTrong }
             );
         }
     }
